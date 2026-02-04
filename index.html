@@ -775,7 +775,9 @@
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    const enterOverlay = document.getElementById('enterOverlay');
+
+<script>
+const enterOverlay = document.getElementById('enterOverlay');
 const backgroundMusic = document.getElementById('backgroundMusic');
 
 backgroundMusic.volume = 0.7;
@@ -797,6 +799,8 @@ function enterSite() {
 
 document.addEventListener('click', enterSite);
 document.addEventListener('keydown', enterSite);
+</script>
+
     <script>
         const cursor = document.querySelector('.cursor');
         const cursorTrail = document.querySelector('.cursor-trail');
@@ -908,11 +912,6 @@ document.addEventListener('keydown', enterSite);
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        const backgroundMusic = document.getElementById('backgroundMusic');
-        backgroundMusic.volume = 0.7;
-        
-        let playAttempts = 0;
-        let playInterval;
         
         function attemptAutoplay() {
             backgroundMusic.play()
