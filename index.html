@@ -678,7 +678,7 @@
     <div class="enter-grid"></div>
     <div class="enter-content">
         <h1 class="enter-title">CLICK TO ENTER</h1>
-        <p class="enter-subtitle">INITIALIZING PORTFOLIO INTERFACE</p>
+        <p class="enter-subtitle">EXPLORE THE PORTFOLIO</p>
     </div>
 </div>
 
@@ -770,9 +770,10 @@
         <img class="modal-content" id="modalImage" src="" alt="Zoomed image">
     </div>
     
-    <audio id="backgroundMusic" loop muted>
-        <source src="audio/フィジーSunburst.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="backgroundMusic" loop>
+    <source src="audio/フィジーSunburst.mp3" type="audio/mpeg">
+</audio>
+
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -803,12 +804,13 @@ document.addEventListener('keydown', enterSite);
 const enterOverlay = document.getElementById('enterOverlay');
 const backgroundMusic = document.getElementById('backgroundMusic');
 
-backgroundMusic.volume = 0.7;
-backgroundMusic.muted = true;
-
 function enterSite() {
-    backgroundMusic.muted = false;
-    backgroundMusic.play();
+    console.log("ENTER CLICKED");
+
+    backgroundMusic.volume = 0.7;
+    backgroundMusic.play()
+        .then(() => console.log("AUDIO PLAYING"))
+        .catch(err => console.error("AUDIO FAILED", err));
 
     enterOverlay.classList.add('hide');
 
@@ -820,9 +822,10 @@ function enterSite() {
     document.removeEventListener('keydown', enterSite);
 }
 
-document.addEventListener('click', enterSite);
-document.addEventListener('keydown', enterSite);
+document.addEventListener('click', enterSite, { once: true });
+document.addEventListener('keydown', enterSite, { once: true });
 </script>
+
 
     <script>
         const cursor = document.querySelector('.cursor');
