@@ -611,9 +611,76 @@
                 font-size: 1rem;
             }
         }
+        /* CLICK TO ENTER OVERLAY */
+
+.enter-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #0a0a0a, #000);
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+}
+
+.enter-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+    opacity: 0.4;
+}
+
+.enter-content {
+    position: relative;
+    text-align: center;
+    animation: enterPulse 2s ease-in-out infinite;
+}
+
+.enter-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 8px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan);
+}
+
+.enter-subtitle {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    color: rgba(0, 255, 255, 0.7);
+}
+
+@keyframes enterPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.enter-overlay.hide {
+    animation: enterFadeOut 0.6s ease forwards;
+}
+
+@keyframes enterFadeOut {
+    to { opacity: 0; pointer-events: none; }
+}
+
     </style>
 </head>
 <body>
+
+<div id="enterOverlay" class="enter-overlay">
+    <div class="enter-grid"></div>
+    <div class="enter-content">
+        <h1 class="enter-title">CLICK TO ENTER</h1>
+        <p class="enter-subtitle">INITIALIZING PORTFOLIO INTERFACE</p>
+    </div>
+</div>
+
     <div class="cursor"></div>
     <div class="cursor-trail"></div>
     
@@ -636,7 +703,7 @@
             <div class="skills-grid">
                 <div class="skill-card">
                     <h3 class="skill-name">BLENDER</h3>
-                    <p class="skill-type">3D Modeling & Animation</p>
+                    <p class="skill-type">3D Modeling & Sculpting</p>
                 </div>
                 <div class="skill-card">
                     <h3 class="skill-name">SUBSTANCE PAINTER</h3>
@@ -657,23 +724,23 @@
             <h2 class="section-title">FEATURED WORK</h2>
             <div class="gallery-container">
                 <div class="gallery-grid">
-                    <div class="gallery-item" data-src="Images/ConanHelm.png">
-                        <img src="Images/ConanHelm.png" alt="Conan Helmet">
+                    <div class="gallery-item" data-src="images/ConanHelm.png">
+                        <img src="images/ConanHelm.png" alt="Conan Helmet">
                     </div>
-                    <div class="gallery-item" data-src="Images/HairFront.png">
-                        <img src="Images/HairFront.png" alt="Hair Study Front">
+                    <div class="gallery-item" data-src="images/HairFront.png">
+                        <img src="images/HairFront.png" alt="Hair Study Front">
                     </div>
-                    <div class="gallery-item" data-src="Images/CreatureMain.png">
-                        <img src="Images/CreatureMain.png" alt="Creature Design">
+                    <div class="gallery-item" data-src="images/CreatureMain.png">
+                        <img src="images/CreatureMain.png" alt="Creature Design">
                     </div>
-                    <div class="gallery-item" data-src="Images/ConanHelmRetopo.png">
-                        <img src="Images/ConanHelmRetopo.png" alt="Helmet Retopology">
+                    <div class="gallery-item" data-src="images/ConanHelmRetopo.png">
+                        <img src="images/ConanHelmRetopo.png" alt="Helmet Retopology">
                     </div>
-                    <div class="gallery-item" data-src="Images/HairBack.png">
-                        <img src="Images/HairBack.png" alt="Hair Study Back">
+                    <div class="gallery-item" data-src="images/HairBack.png">
+                        <img src="images/HairBack.png" alt="Hair Study Back">
                     </div>
-                    <div class="gallery-item" data-src="Images/Creature2.png">
-                        <img src="Images/Creature2.png" alt="Creature Variant">
+                    <div class="gallery-item" data-src="images/Creature2.png">
+                        <img src="images/Creature2.png" alt="Creature Variant">
                     </div>
                 </div>
             </div>
@@ -682,7 +749,7 @@
         <section class="contact-section">
             <div class="contact-content">
                 <h2 class="section-title">LET'S WORK TOGETHER</h2>
-                <p style="font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px;">Ready to bring your vision to life?</p>
+                <p style="font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px;">Want to bring your vision to life?</p>
                 <p style="font-size: 1.5rem; margin-top: 30px; color: var(--cyan); letter-spacing: 3px;">kuba245</p>
             </div>
         </section>
@@ -702,11 +769,34 @@
         <img class="modal-content" id="modalImage" src="" alt="Zoomed image">
     </div>
     
-    <audio id="backgroundMusic" loop autoplay>
-        <source src="SFX/フィジーSunburst.mp3" type="audio/mpeg">
+    <audio id="backgroundMusic" loop autoplay muted>
+        <source src="audio/フィジーSunburst.mp3" type="audio/mpeg">
     </audio>
     
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    const enterOverlay = document.getElementById('enterOverlay');
+const backgroundMusic = document.getElementById('backgroundMusic');
+
+backgroundMusic.volume = 0.7;
+backgroundMusic.muted = true;
+
+function enterSite() {
+    backgroundMusic.muted = false;
+    backgroundMusic.play();
+
+    enterOverlay.classList.add('hide');
+
+    setTimeout(() => {
+        enterOverlay.remove();
+    }, 600);
+
+    document.removeEventListener('click', enterSite);
+    document.removeEventListener('keydown', enterSite);
+}
+
+document.addEventListener('click', enterSite);
+document.addEventListener('keydown', enterSite);
     <script>
         const cursor = document.querySelector('.cursor');
         const cursorTrail = document.querySelector('.cursor-trail');
