@@ -776,6 +776,30 @@
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const backgroundMusic = document.getElementById('backgroundMusic');
+const enterOverlay = document.getElementById('enterOverlay');
+
+backgroundMusic.volume = 0.7;
+
+function enterSite() {
+    backgroundMusic.muted = false;
+    backgroundMusic.play().catch(err => {
+        console.log("Audio blocked:", err);
+    });
+
+    if (enterOverlay) {
+        enterOverlay.classList.add('hide');
+        setTimeout(() => enterOverlay.remove(), 600);
+    }
+
+    document.removeEventListener('click', enterSite);
+    document.removeEventListener('keydown', enterSite);
+}
+
+document.addEventListener('click', enterSite);
+document.addEventListener('keydown', enterSite);
+</script>
 
 <script>
 const enterOverlay = document.getElementById('enterOverlay');
