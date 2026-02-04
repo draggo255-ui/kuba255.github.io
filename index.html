@@ -614,6 +614,7 @@
         /* CLICK TO ENTER OVERLAY */
 
 .enter-overlay {
+    pointer-events: all;
     position: fixed;
     inset: 0;
     background: radial-gradient(circle at center, #0a0a0a, #000);
@@ -769,7 +770,7 @@
         <img class="modal-content" id="modalImage" src="" alt="Zoomed image">
     </div>
     
-    <audio id="backgroundMusic" loop autoplay muted>
+    <audio id="backgroundMusic" loop muted>
         <source src="audio/フィジーSunburst.mp3" type="audio/mpeg">
     </audio>
     
@@ -911,35 +912,6 @@ document.addEventListener('keydown', enterSite);
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        
-        function attemptAutoplay() {
-            backgroundMusic.play()
-                .then(() => {
-                    if (playInterval) {
-                        clearInterval(playInterval);
-                    }
-                })
-                .catch(error => {
-                    playAttempts++;
-                });
-        }
-        
-        attemptAutoplay();
-        
-        playInterval = setInterval(() => {
-            if (backgroundMusic.paused) {
-                attemptAutoplay();
-            } else {
-                clearInterval(playInterval);
-            }
-        }, 500);
-        
-        document.addEventListener('click', attemptAutoplay, { once: true });
-        document.addEventListener('mousemove', attemptAutoplay, { once: true });
-        document.addEventListener('keydown', attemptAutoplay, { once: true });
-        document.addEventListener('scroll', attemptAutoplay, { once: true });
-        document.addEventListener('touchstart', attemptAutoplay, { once: true });
         
         const imageModal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
