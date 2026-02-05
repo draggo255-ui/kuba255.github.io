@@ -23,7 +23,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none;
         }
         
         body {
@@ -33,6 +32,7 @@
             overflow-x: hidden;
             position: relative;
             line-height: 1.6;
+            cursor: none;
         }
         
         .cursor {
@@ -42,7 +42,7 @@
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 99999;
             transition: transform 0.15s ease;
             box-shadow: 0 0 20px var(--primary);
         }
@@ -54,7 +54,7 @@
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9998;
+            z-index: 99998;
             opacity: 0.5;
         }
         
@@ -78,6 +78,16 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+            pointer-events: none;
+        }
+        
+        #enterParticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
             pointer-events: none;
         }
         
@@ -308,6 +318,20 @@
             letter-spacing: 2px;
             margin-bottom: 6px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .now-playing-label::before {
+            content: '●';
+            color: var(--primary);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
         
         .now-playing-title {
@@ -315,6 +339,47 @@
             font-size: 1rem;
             letter-spacing: 1px;
             font-weight: 500;
+        }
+
+        .discord-copy {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(26, 26, 26, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .discord-copy:hover {
+            border-color: var(--primary);
+            background: rgba(26, 26, 26, 0.8);
+        }
+
+        .copy-button {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: none;
+            font-weight: 600;
+        }
+
+        .copy-button:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        .copy-button.copied {
+            background: var(--primary);
+            color: var(--bg-dark);
         }
         
         .image-modal {
@@ -380,21 +445,40 @@
             position: fixed;
             inset: 0;
             background: radial-gradient(circle at center, #0f0f0f, #000000);
-            z-index: 20000;
+            z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: none;
-            transition: opacity 0.6s ease;
+            transition: all 0.8s cubic-bezier(0.76, 0, 0.24, 1);
         }
 
         .enter-overlay.hide {
             opacity: 0;
+            transform: scale(1.2);
+            filter: blur(20px);
             pointer-events: none;
+        }
+
+        .enter-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridFloat 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridFloat {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .enter-content {
             text-align: center;
+            position: relative;
+            z-index: 10001;
         }
 
         .enter-logo {
@@ -405,6 +489,13 @@
             color: var(--text-primary);
             margin-bottom: 50px;
             text-shadow: 0 0 40px var(--primary);
+            animation: logoFloat 3s ease-in-out infinite;
+            cursor: none;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         .enter-button {
@@ -420,23 +511,23 @@
             overflow: hidden;
             transition: all 0.3s ease;
             font-weight: 600;
+            cursor: none;
         }
 
         .enter-button::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 0;
+            left: 0;
             width: 0;
-            height: 0;
+            height: 100%;
             background: var(--primary);
-            transform: translate(-50%, -50%);
-            transition: width 0.4s ease, height 0.4s ease;
+            transition: width 0.4s ease;
+            z-index: 1;
         }
 
         .enter-button:hover::before {
-            width: 300px;
-            height: 300px;
+            width: 100%;
         }
 
         .enter-button:hover {
@@ -505,6 +596,8 @@
 </head>
 <body>
     <div id="enterOverlay" class="enter-overlay">
+        <div class="enter-grid"></div>
+        <canvas class="particle-bg" id="enterParticles"></canvas>
         <div class="enter-content">
             <h1 class="enter-logo">KUBA</h1>
             <button class="enter-button" id="enterButton">
@@ -588,6 +681,10 @@
             <h2 class="contact-title">Let's Work Together</h2>
             <p class="contact-text">Available for freelance projects and commissions</p>
             <div class="contact-info">kuba245</div>
+            <div class="discord-copy">
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">Discord</span>
+                <button class="copy-button" id="copyDiscord">COPY</button>
+            </div>
         </section>
     </div>
     
@@ -615,24 +712,76 @@
         const enterButton = document.getElementById('enterButton');
         const backgroundMusic = document.getElementById('backgroundMusic');
         
+        // Enter screen particles
+        const enterParticleCanvas = document.getElementById('enterParticles');
+        const enterScene = new THREE.Scene();
+        const enterCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const enterRenderer = new THREE.WebGLRenderer({ canvas: enterParticleCanvas, alpha: true, antialias: true });
+        enterRenderer.setSize(window.innerWidth, window.innerHeight);
+        
+        const enterParticlesGeometry = new THREE.BufferGeometry();
+        const enterParticlesCount = 800;
+        const enterPosArray = new Float32Array(enterParticlesCount * 3);
+        
+        for (let i = 0; i < enterParticlesCount * 3; i++) {
+            enterPosArray[i] = (Math.random() - 0.5) * 100;
+        }
+        
+        enterParticlesGeometry.setAttribute('position', new THREE.BufferAttribute(enterPosArray, 3));
+        const enterParticlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const enterParticlesMesh = new THREE.Points(enterParticlesGeometry, enterParticlesMaterial);
+        enterScene.add(enterParticlesMesh);
+        enterCamera.position.z = 30;
+        
+        function animateEnterParticles() {
+            if (!enterOverlay.classList.contains('hide')) {
+                requestAnimationFrame(animateEnterParticles);
+                enterParticlesMesh.rotation.y += 0.0003;
+                enterParticlesMesh.rotation.x += 0.0001;
+                enterRenderer.render(enterScene, enterCamera);
+            }
+        }
+        animateEnterParticles();
+        
         enterButton.addEventListener('click', function() {
             backgroundMusic.volume = 0.7;
             
-            const playPromise = backgroundMusic.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    console.log('Music playing');
-                }).catch(error => {
-                    console.log('Playback prevented:', error);
-                });
-            }
+            // Try to play immediately
+            backgroundMusic.play().then(() => {
+                console.log('Music started');
+            }).catch(err => {
+                console.log('First play attempt failed:', err);
+                // Try again
+                setTimeout(() => {
+                    backgroundMusic.play().catch(e => console.log('Second attempt failed:', e));
+                }, 100);
+            });
             
             enterOverlay.classList.add('hide');
             
             setTimeout(() => {
                 enterOverlay.remove();
-            }, 600);
+            }, 800);
+        });
+        
+        // Discord copy button
+        const copyDiscordBtn = document.getElementById('copyDiscord');
+        copyDiscordBtn.addEventListener('click', function() {
+            navigator.clipboard.writeText('kuba245').then(() => {
+                copyDiscordBtn.textContent = 'COPIED!';
+                copyDiscordBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyDiscordBtn.textContent = 'COPY';
+                    copyDiscordBtn.classList.remove('copied');
+                }, 2000);
+            });
         });
         
         const cursor = document.querySelector('.cursor');
@@ -659,7 +808,7 @@
         }
         animateTrail();
         
-        const hoverElements = document.querySelectorAll('.skill-card, .gallery-item, .modal-close, .enter-button');
+        const hoverElements = document.querySelectorAll('.skill-card, .gallery-item, .modal-close, .enter-button, .copy-button');
         hoverElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.transform = 'scale(2)';
