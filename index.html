@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuba - 3D Artist Portfolio</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --cyan: #00ffff;
-            --dark-cyan: #00b8b8;
-            --deep-cyan: #008b8b;
-            --dark-grey: #1a1a1a;
-            --medium-grey: #2a2a2a;
-            --light-grey: #3a3a3a;
-            --accent-cyan: #00ffff;
+            --primary: #00ffff;
+            --primary-dark: #00b8b8;
+            --primary-light: #66ffff;
+            --bg-dark: #0a0a0a;
+            --bg-medium: #1a1a1a;
+            --bg-light: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --border: rgba(0, 255, 255, 0.2);
         }
         
         * {
@@ -25,35 +27,35 @@
         }
         
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background: var(--dark-grey);
-            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             overflow-x: hidden;
             position: relative;
+            line-height: 1.6;
         }
         
         .cursor {
             width: 20px;
             height: 20px;
-            border: 2px solid var(--cyan);
+            border: 2px solid var(--primary);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
             transition: transform 0.15s ease;
-            box-shadow: 0 0 20px var(--cyan), inset 0 0 10px var(--cyan);
+            box-shadow: 0 0 20px var(--primary);
         }
         
         .cursor-trail {
             width: 8px;
             height: 8px;
-            background: var(--cyan);
+            background: var(--primary);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9998;
-            opacity: 0.6;
-            box-shadow: 0 0 10px var(--cyan);
+            opacity: 0.5;
         }
         
         .grid-bg {
@@ -63,338 +65,10 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 50px 50px;
             z-index: 0;
-            animation: gridMove 20s linear infinite;
-        }
-        
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-        
-        .cube-container {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        .floating-cube {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            animation: float 15s ease-in-out infinite;
-            transform-style: preserve-3d;
-            box-shadow: 
-                0 0 20px rgba(0, 255, 255, 0.2),
-                inset 0 0 20px rgba(0, 255, 255, 0.1);
-        }
-        
-        .floating-cube::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(0, 255, 255, 0.15));
-            box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.1);
-        }
-        
-        .floating-cube::after {
-            content: '';
-            position: absolute;
-            inset: 4px;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 10px 10px;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
-            25% { transform: translateY(-100px) rotateX(90deg) rotateY(45deg); }
-            50% { transform: translateY(-200px) rotateX(180deg) rotateY(90deg); }
-            75% { transform: translateY(-100px) rotateX(270deg) rotateY(135deg); }
-        }
-        
-        .scanline {
-            position: fixed;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(transparent, var(--cyan), transparent);
-            z-index: 2;
-            animation: scan 4s linear infinite;
-            opacity: 0.1;
-        }
-        
-        @keyframes scan {
-            0% { top: 0%; }
-            100% { top: 100%; }
-        }
-        
-        .container {
-            position: relative;
-            z-index: 3;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            padding: 60px 0;
-            text-align: center;
-            position: relative;
-        }
-        
-        .glitch-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 5rem;
-            font-weight: 900;
-            letter-spacing: 8px;
-            background: linear-gradient(45deg, var(--cyan), #fff, var(--dark-cyan));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            animation: glowPulse 2s ease-in-out infinite;
-            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-        }
-        
-        @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 20px var(--cyan)); }
-            50% { filter: drop-shadow(0 0 40px var(--cyan)); }
-        }
-        
-        .subtitle {
-            font-size: 1.5rem;
-            color: var(--cyan);
-            letter-spacing: 4px;
-            margin-top: 20px;
-            font-weight: 300;
-            animation: fadeIn 2s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .skills-section {
-            margin: 100px 0;
-        }
-        
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            color: var(--cyan);
-            margin-bottom: 60px;
-            text-align: center;
-            letter-spacing: 5px;
-            position: relative;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-            box-shadow: 0 0 10px var(--cyan);
-        }
-        
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-        
-        .skill-card {
-            background: linear-gradient(135deg, rgba(42, 42, 42, 0.6), rgba(26, 26, 26, 0.8));
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 40px 30px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 
-                0 5px 20px rgba(0, 0, 0, 0.5),
-                inset 0 0 30px rgba(0, 255, 255, 0.05);
-        }
-        
-        .skill-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            pointer-events: none;
-        }
-        
-        .skill-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
-            opacity: 0;
-        }
-        
-        .skill-card:hover::after {
-            left: 100%;
-            opacity: 1;
-        }
-        
-        .skill-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--cyan);
-            box-shadow: 
-                0 15px 50px rgba(0, 255, 255, 0.4),
-                inset 0 0 30px rgba(0, 255, 255, 0.1);
-        }
-        
-        .skill-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: var(--cyan);
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        
-        .skill-type {
-            color: #aaa;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-        
-        .gallery-section {
-            margin: 100px 0;
-            perspective: 1500px;
-            position: relative;
-        }
-        
-        .gallery-container {
-            position: relative;
-            max-width: 1200px;
-            margin: 60px auto 0;
-            padding: 60px;
-            background: linear-gradient(135deg, rgba(42, 42, 42, 0.4), rgba(26, 26, 26, 0.6));
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 20px;
-            box-shadow: 
-                0 0 60px rgba(0, 255, 255, 0.2),
-                inset 0 0 60px rgba(0, 255, 255, 0.05);
-        }
-        
-        .gallery-container::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
-            background-size: 30px 30px;
-            border-radius: 20px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .gallery-item {
-            aspect-ratio: 16/10;
-            background: linear-gradient(135deg, var(--medium-grey), var(--dark-grey));
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            transition: all 0.4s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-style: preserve-3d;
-            box-shadow: 
-                0 5px 20px rgba(0, 0, 0, 0.5),
-                inset 0 0 30px rgba(0, 255, 255, 0.05);
-        }
-        
-        .gallery-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 1;
-        }
-        
-        .gallery-item::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
-            z-index: 1;
-        }
-        
-        .gallery-item:hover::before {
-            opacity: 1;
-        }
-        
-        .gallery-item:hover::after {
-            left: 100%;
-        }
-        
-        .gallery-item:hover {
-            border-color: var(--cyan);
-            box-shadow: 
-                0 15px 50px rgba(0, 255, 255, 0.4),
-                inset 0 0 30px rgba(0, 255, 255, 0.1);
-            transform: translateZ(30px);
-        }
-        
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-            position: relative;
-            z-index: 0;
-        }
-        
-        .gallery-item:hover img {
-            transform: scale(1.05);
         }
         
         .particle-bg {
@@ -407,117 +81,251 @@
             pointer-events: none;
         }
         
-        .contact-section {
-            margin: 100px 0;
-            padding: 80px 40px;
-            background: linear-gradient(135deg, var(--medium-grey), var(--dark-grey));
-            border: 2px solid var(--cyan);
-            border-radius: 20px;
+        .container {
+            position: relative;
+            z-index: 3;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        header {
+            padding: 80px 0 60px;
             text-align: center;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px var(--primary);
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--primary);
+            letter-spacing: 3px;
+            font-weight: 400;
+        }
+        
+        .section {
+            margin: 120px 0;
+        }
+        
+        .section-header {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+        
+        .section-divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            margin-bottom: 20px;
+        }
+        
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 600px;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .skill-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(42, 42, 42, 0.4));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 30px;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         
-        .contact-section::before {
+        .skill-card::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
         }
         
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .skill-card:hover::before {
+            left: 100%;
         }
         
-        .contact-content {
+        .skill-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
+        }
+        
+        .skill-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .skill-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .gallery-wrapper {
+            perspective: 2000px;
+        }
+        
+        .gallery-container {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.6), rgba(10, 10, 10, 0.8));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 50px;
             position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 16/10;
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: none;
+        }
+        
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
             z-index: 2;
         }
         
-        .now-playing-popup {
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+        
+        .gallery-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .contact-section {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.6), rgba(10, 10, 10, 0.8));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .contact-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+        
+        .contact-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .contact-info {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+        
+        .now-playing {
             position: fixed;
             top: 30px;
             right: 30px;
-            background: linear-gradient(135deg, rgba(42, 42, 42, 0.95), rgba(26, 26, 26, 0.95));
-            border: 2px solid var(--cyan);
-            border-radius: 15px;
-            padding: 20px 30px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 24px;
             z-index: 10001;
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.4);
             backdrop-filter: blur(10px);
-            animation: slideInRight 0.5s ease;
-        }
-        
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
         
         .now-playing-label {
             font-family: 'Orbitron', sans-serif;
-            color: var(--cyan);
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .now-playing-label::before {
-            content: '●';
-            color: var(--cyan);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        .now-playing-title {
-            font-family: 'Rajdhani', sans-serif;
-            color: #fff;
-            font-size: 1.2rem;
+            color: var(--primary);
+            font-size: 0.7rem;
             letter-spacing: 2px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
         
-        .now-playing-popup::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 15px 15px;
-            border-radius: 15px;
-            pointer-events: none;
+        .now-playing-title {
+            color: var(--text-primary);
+            font-size: 1rem;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
         
         .image-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: rgba(0, 0, 0, 0.95);
             z-index: 10002;
             justify-content: center;
             align-items: center;
             cursor: none;
-            animation: fadeIn 0.3s ease;
         }
         
         .image-modal.active {
@@ -528,21 +336,9 @@
             max-width: 90%;
             max-height: 90vh;
             object-fit: contain;
-            border: 3px solid var(--cyan);
-            border-radius: 10px;
-            box-shadow: 0 0 60px rgba(0, 255, 255, 0.6);
-            animation: zoomIn 0.3s ease;
-        }
-        
-        @keyframes zoomIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.4);
         }
         
         .modal-close {
@@ -550,122 +346,80 @@
             top: 30px;
             right: 30px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            color: var(--cyan);
-            background: rgba(26, 26, 26, 0.8);
-            border: 2px solid var(--cyan);
+            font-size: 1.5rem;
+            color: var(--primary);
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid var(--primary);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
             cursor: none;
+            font-weight: 300;
         }
         
         .modal-close:hover {
-            background: var(--cyan);
-            color: var(--dark-grey);
+            background: var(--primary);
+            color: var(--bg-dark);
             transform: rotate(90deg);
         }
         
         footer {
             text-align: center;
-            padding: 40px;
-            color: rgba(255, 255, 255, 0.5);
-            border-top: 1px solid rgba(0, 255, 255, 0.2);
-            letter-spacing: 2px;
+            padding: 60px 0 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-top: 1px solid var(--border);
         }
         
         .enter-overlay {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at center, #0d0d0d, #000000);
+            background: radial-gradient(circle at center, #0f0f0f, #000000);
             z-index: 20000;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: none;
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transition: opacity 0.6s ease;
         }
 
         .enter-overlay.hide {
             opacity: 0;
-            transform: scale(1.1);
             pointer-events: none;
         }
 
-        .enter-grid {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridMove 20s linear infinite;
-            opacity: 0.5;
-        }
-        
-        .enter-scanline {
-            position: absolute;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(transparent, var(--cyan), transparent);
-            animation: scan 3s linear infinite;
-            opacity: 0.3;
-        }
-
         .enter-content {
-            position: relative;
             text-align: center;
-            z-index: 1;
         }
 
         .enter-logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 6rem;
+            font-size: 5rem;
             font-weight: 900;
-            letter-spacing: 12px;
-            background: linear-gradient(45deg, var(--cyan), #fff, var(--dark-cyan));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 40px;
-            animation: logoGlow 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 30px var(--cyan));
-        }
-        
-        @keyframes logoGlow {
-            0%, 100% { filter: drop-shadow(0 0 30px var(--cyan)); }
-            50% { filter: drop-shadow(0 0 60px var(--cyan)); }
+            letter-spacing: 16px;
+            color: var(--text-primary);
+            margin-bottom: 50px;
+            text-shadow: 0 0 40px var(--primary);
         }
 
         .enter-button {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 6px;
-            color: var(--cyan);
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            color: var(--primary);
             background: transparent;
-            border: 3px solid var(--cyan);
-            padding: 20px 60px;
-            border-radius: 50px;
+            border: 2px solid var(--primary);
+            padding: 18px 50px;
+            border-radius: 6px;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s ease;
-            animation: buttonPulse 2s ease-in-out infinite;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-        }
-        
-        @keyframes buttonPulse {
-            0%, 100% { 
-                box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-                transform: scale(1);
-            }
-            50% { 
-                box-shadow: 0 0 50px rgba(0, 255, 255, 0.6);
-                transform: scale(1.05);
-            }
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         .enter-button::before {
@@ -675,21 +429,19 @@
             left: 50%;
             width: 0;
             height: 0;
-            background: var(--cyan);
-            border-radius: 50%;
+            background: var(--primary);
             transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
+            transition: width 0.4s ease, height 0.4s ease;
         }
 
         .enter-button:hover::before {
-            width: 400px;
-            height: 400px;
+            width: 300px;
+            height: 300px;
         }
 
         .enter-button:hover {
-            color: var(--dark-grey);
-            border-color: #fff;
-            box-shadow: 0 0 60px var(--cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 30px var(--primary);
         }
 
         .enter-button span {
@@ -698,17 +450,11 @@
         }
 
         .enter-subtitle {
-            margin-top: 30px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            letter-spacing: 4px;
-            color: rgba(0, 255, 255, 0.6);
-            animation: subtitleFade 2s ease-in-out infinite;
-        }
-        
-        @keyframes subtitleFade {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+            margin-top: 24px;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
         
         @media (max-width: 1024px) {
@@ -718,8 +464,13 @@
         }
         
         @media (max-width: 768px) {
-            h1 {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .logo {
                 font-size: 3rem;
+                letter-spacing: 6px;
             }
             
             .section-title {
@@ -731,26 +482,22 @@
             }
             
             .gallery-container {
-                padding: 30px;
+                padding: 30px 20px;
             }
             
-            .now-playing-popup {
+            .now-playing {
                 top: 15px;
                 right: 15px;
-                padding: 15px 20px;
-            }
-            
-            .now-playing-title {
-                font-size: 1rem;
+                padding: 12px 18px;
             }
             
             .enter-logo {
                 font-size: 3rem;
-                letter-spacing: 6px;
+                letter-spacing: 8px;
             }
             
             .enter-button {
-                font-size: 1.2rem;
+                font-size: 1rem;
                 padding: 15px 40px;
             }
         }
@@ -758,14 +505,12 @@
 </head>
 <body>
     <div id="enterOverlay" class="enter-overlay">
-        <div class="enter-grid"></div>
-        <div class="enter-scanline"></div>
         <div class="enter-content">
             <h1 class="enter-logo">KUBA</h1>
             <button class="enter-button" id="enterButton">
-                <span>CLICK TO ENTER</span>
+                <span>ENTER PORTFOLIO</span>
             </button>
-            <p class="enter-subtitle">3D ARTIST PORTFOLIO</p>
+            <p class="enter-subtitle">3D Artist</p>
         </div>
     </div>
 
@@ -773,83 +518,86 @@
     <div class="cursor-trail"></div>
     
     <div class="grid-bg"></div>
-    <div class="scanline"></div>
     <canvas class="particle-bg" id="particleBg"></canvas>
-    
-    <div class="cube-container" id="cubeContainer"></div>
     
     <div class="container">
         <header>
-            <div class="glitch-wrapper">
-                <h1>KUBA</h1>
-            </div>
-            <p class="subtitle">DIGITAL SCULPTOR • TEXTURE ARTIST • RETOPOLOGY</p>
+            <h1 class="logo">KUBA</h1>
+            <p class="tagline">DIGITAL SCULPTOR • TEXTURE ARTIST • RETOPOLOGY</p>
         </header>
         
-        <section class="skills-section">
-            <h2 class="section-title">TOOLS & SOFTWARE</h2>
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Software & Tools</h2>
+                <div class="section-divider"></div>
+                <p class="section-description">Professional 3D modeling and texturing workflow</p>
+            </div>
             <div class="skills-grid">
                 <div class="skill-card">
-                    <h3 class="skill-name">BLENDER</h3>
-                    <p class="skill-type">3D Modeling & Sculpting</p>
+                    <h3 class="skill-name">Blender</h3>
+                    <p class="skill-description">3D modeling, sculpting, and animation</p>
                 </div>
                 <div class="skill-card">
-                    <h3 class="skill-name">SUBSTANCE PAINTER</h3>
-                    <p class="skill-type">Advanced Texturing</p>
+                    <h3 class="skill-name">Substance Painter</h3>
+                    <p class="skill-description">PBR texturing and material creation</p>
                 </div>
                 <div class="skill-card">
-                    <h3 class="skill-name">ZBRUSH</h3>
-                    <p class="skill-type">Digital Sculpting</p>
+                    <h3 class="skill-name">ZBrush</h3>
+                    <p class="skill-description">High-resolution digital sculpting</p>
                 </div>
                 <div class="skill-card">
-                    <h3 class="skill-name">KRITA</h3>
-                    <p class="skill-type">2D Graphics & Concept Art</p>
+                    <h3 class="skill-name">Krita</h3>
+                    <p class="skill-description">2D graphics and concept art</p>
                 </div>
             </div>
         </section>
         
-        <section class="gallery-section">
-            <h2 class="section-title">FEATURED WORK</h2>
-            <div class="gallery-container">
-                <div class="gallery-grid">
-                    <div class="gallery-item" data-src="images/ConanHelm.png">
-                        <img src="images/ConanHelm.png" alt="Conan Helmet">
-                    </div>
-                    <div class="gallery-item" data-src="images/HairFront.png">
-                        <img src="images/HairFront.png" alt="Hair Study Front">
-                    </div>
-                    <div class="gallery-item" data-src="images/CreatureMain.png">
-                        <img src="images/CreatureMain.png" alt="Creature Design">
-                    </div>
-                    <div class="gallery-item" data-src="images/ConanHelmRetopo.png">
-                        <img src="images/ConanHelmRetopo.png" alt="Helmet Retopology">
-                    </div>
-                    <div class="gallery-item" data-src="images/HairBack.png">
-                        <img src="images/HairBack.png" alt="Hair Study Back">
-                    </div>
-                    <div class="gallery-item" data-src="images/Creature2.png">
-                        <img src="images/Creature2.png" alt="Creature Variant">
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Featured Work</h2>
+                <div class="section-divider"></div>
+                <p class="section-description">Selection of recent projects</p>
+            </div>
+            <div class="gallery-wrapper">
+                <div class="gallery-container" id="galleryContainer">
+                    <div class="gallery-grid">
+                        <div class="gallery-item" data-src="images/ConanHelm.png">
+                            <img src="images/ConanHelm.png" alt="Conan Helmet">
+                        </div>
+                        <div class="gallery-item" data-src="images/HairFront.png">
+                            <img src="images/HairFront.png" alt="Hair Study Front">
+                        </div>
+                        <div class="gallery-item" data-src="images/CreatureMain.png">
+                            <img src="images/CreatureMain.png" alt="Creature Design">
+                        </div>
+                        <div class="gallery-item" data-src="images/ConanHelmRetopo.png">
+                            <img src="images/ConanHelmRetopo.png" alt="Helmet Retopology">
+                        </div>
+                        <div class="gallery-item" data-src="images/HairBack.png">
+                            <img src="images/HairBack.png" alt="Hair Study Back">
+                        </div>
+                        <div class="gallery-item" data-src="images/Creature2.png">
+                            <img src="images/Creature2.png" alt="Creature Variant">
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
         
-        <section class="contact-section">
-            <div class="contact-content">
-                <h2 class="section-title">LET'S WORK TOGETHER</h2>
-                <p style="font-size: 1.2rem; margin-top: 20px; letter-spacing: 2px;">Want to bring your vision to life?</p>
-                <p style="font-size: 1.5rem; margin-top: 30px; color: var(--cyan); letter-spacing: 3px;">kuba245</p>
-            </div>
+        <section class="section contact-section">
+            <h2 class="contact-title">Let's Work Together</h2>
+            <p class="contact-text">Available for freelance projects and commissions</p>
+            <div class="contact-info">kuba245</div>
         </section>
     </div>
     
     <footer>
-        <p>© 2026 KUBA245 - 3D ARTIST PORTFOLIO</p>
+        <p>2026 Kuba - 3D Artist Portfolio</p>
     </footer>
     
-    <div class="now-playing-popup">
+    <div class="now-playing">
         <div class="now-playing-label">NOW PLAYING</div>
-        <div class="now-playing-title">フィジーSunburst</div>
+        <div class="now-playing-title">Fiji Sunburst</div>
     </div>
     
     <div class="image-modal" id="imageModal">
@@ -867,30 +615,24 @@
         const enterButton = document.getElementById('enterButton');
         const backgroundMusic = document.getElementById('backgroundMusic');
         
-        function enterSite() {
+        enterButton.addEventListener('click', function() {
             backgroundMusic.volume = 0.7;
-            backgroundMusic.play()
-                .then(() => {
-                    console.log('Music started playing');
-                })
-                .catch(err => {
-                    console.log('Audio autoplay blocked:', err);
-                    backgroundMusic.play();
+            
+            const playPromise = backgroundMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log('Music playing');
+                }).catch(error => {
+                    console.log('Playback prevented:', error);
                 });
+            }
             
             enterOverlay.classList.add('hide');
             
             setTimeout(() => {
                 enterOverlay.remove();
-            }, 800);
-        }
-        
-        enterButton.addEventListener('click', enterSite);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                enterSite();
-            }
+            }, 600);
         });
         
         const cursor = document.querySelector('.cursor');
@@ -927,17 +669,6 @@
             });
         });
         
-        const cubeContainer = document.getElementById('cubeContainer');
-        for (let i = 0; i < 10; i++) {
-            const cube = document.createElement('div');
-            cube.className = 'floating-cube';
-            cube.style.left = Math.random() * 100 + '%';
-            cube.style.top = Math.random() * 100 + '%';
-            cube.style.animationDelay = Math.random() * 5 + 's';
-            cube.style.animationDuration = (10 + Math.random() * 10) + 's';
-            cubeContainer.appendChild(cube);
-        }
-        
         const particleCanvas = document.getElementById('particleBg');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -945,7 +676,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
+        const particlesCount = 1500;
         const posArray = new Float32Array(particlesCount * 3);
         
         for (let i = 0; i < particlesCount * 3; i++) {
@@ -954,10 +685,10 @@
         
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
+            size: 0.04,
             color: 0x00ffff,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.6,
             blending: THREE.AdditiveBlending
         });
         
@@ -968,13 +699,13 @@
         
         function animateParticles() {
             requestAnimationFrame(animateParticles);
-            particlesMesh.rotation.y += 0.0005;
-            particlesMesh.rotation.x += 0.0002;
+            particlesMesh.rotation.y += 0.0003;
+            particlesMesh.rotation.x += 0.0001;
             renderer.render(scene, camera);
         }
         animateParticles();
         
-        const galleryContainer = document.querySelector('.gallery-container');
+        const galleryContainer = document.getElementById('galleryContainer');
         let gallery3DMouseX = 0;
         let gallery3DMouseY = 0;
         let targetX = 0;
@@ -986,11 +717,11 @@
         });
         
         function animate3DGallery() {
-            targetX += (gallery3DMouseX * 15 - targetX) * 0.05;
-            targetY += (gallery3DMouseY * 15 - targetY) * 0.05;
+            targetX += (gallery3DMouseX * 10 - targetX) * 0.05;
+            targetY += (gallery3DMouseY * 10 - targetY) * 0.05;
             
             if (galleryContainer) {
-                galleryContainer.style.transform = `perspective(1500px) rotateY(${targetX}deg) rotateX(${targetY}deg)`;
+                galleryContainer.style.transform = `perspective(2000px) rotateY(${targetX}deg) rotateX(${targetY}deg)`;
             }
             
             requestAnimationFrame(animate3DGallery);
